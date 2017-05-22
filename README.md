@@ -4,7 +4,7 @@
 
 650 条招聘信息中，各城市岗位数量分布如下图。 
 
-![](http://oog4yfyu0.bkt.clouddn.com/job_1.png)  
+![](https://github.com/chenjiandongx/51job/blob/master/images/job_1.png)  
 
 上海 228 是最多的，北京 202 排在第二，两者都超过了 200，深圳和广州就和上海北京差得有点多了，分别只有 115 和 91，另外还有 14 个是异地招聘的。当然数据只是针对这前 650 条数据而言！不过总体上也差不多，毕竟后面的招聘信息都只是在岗位要求里提到 Python 而已，并没有专门招收 Python 开发者。
 
@@ -78,19 +78,19 @@
 
 接着来看一下英文词汇，统计了 top20 的情况，看看作为一个 Python 开发者还需要什么技能。  
 
-![](http://oog4yfyu0.bkt.clouddn.com/job_3.png)  
+![](https://github.com/chenjiandongx/51job/blob/master/images/job_3.png)  
 
 毫无疑问，Python 遥遥领先，这是必备的。比较靠前的有 Linux, Django, Web, MySql, Redis。Web 也是 Python 很火的一个领域，相对应的 Django, Flask, Tornado 这样的 Web 框架才会得到这样的重视。Linux 这个也是刚需阿，虽然我一直在 Windows 下开发 Python，但我也挺喜欢 Linux 的，没事也折腾折腾。前端的三剑客 HTML, CSS, JavaScript 也赫然在列，说到底还是 Web 的原因。数据库的也出现了三个，数据库我觉得是每个程序开发人员都应该掌握的技能，毕竟数据最优的存储方式是放在数据库里。API 这个词提醒着我们要多看文档，这个其实也就涉及到英语阅读的问题，Python 有着一个很棒的社区，很多优秀的类库，大部分的类库都有详细的文档，并且大多数都是英文的。所以拥有一定的英语阅读能力是非常重要的，不要指望所有库类都能有人给自己翻译中文文档。
 
 所有词语前 200 生成词云  
 
-![](http://oog4yfyu0.bkt.clouddn.com/worldcloud.jpg)  
+![](https://github.com/chenjiandongx/51job/blob/master/images/worldcloud.jpg)  
 
 一直觉得词云还是得黑色背景视觉冲击更大一点。  
 
 然后对职位进行分析，这个问题可就很头疼了，因为没有一个规范，所以导致招聘信息上的职位写的是各式各样，举个例子吧。Python 高级开发工程师和高级 Python 开发工程师是一个意思吧。Python 开发工程师，python 开发工程师，PYTHON 工程师这三个是一个意思吧。有的甚至写着 Python 攻城师？？？ 这样就造成了很难进行统计，找不到好办法，只能先进行词频统计，然后剩下的再进行手动归类。最终被我归为 20 个类别。
 
-![](http://oog4yfyu0.bkt.clouddn.com/job_4.png) 
+![](https://github.com/chenjiandongx/51job/blob/master/images/job_4.png) 
 
 在爬虫和数据分析这块还是有一定的市场的，开发工程师是总的一个范称吧，这个有特别要求高级和中级的。  
 
@@ -120,7 +120,7 @@
 
 先来看看总体的情况  
 
-![](http://oog4yfyu0.bkt.clouddn.com/job_2.png)  
+![](https://github.com/chenjiandongx/51job/blob/master/images/job_2.png)  
 
 大体上呈现一个先升后降的趋势，[1.1 - 1.5]万/月是最多的一个范围，> 2.5 万/月的也还不错，有 26 个招聘职位。  
 
@@ -128,26 +128,26 @@
 
 北京  
 
-![](http://oog4yfyu0.bkt.clouddn.com/beijing.png)  
+![](https://github.com/chenjiandongx/51job/blob/master/images/beijing.png)  
 
 上海  
 
-![](http://oog4yfyu0.bkt.clouddn.com/shanghai.png)  
+![](https://github.com/chenjiandongx/51job/blob/master/images/shanghai.png)  
 
 深圳  
 
-![](http://oog4yfyu0.bkt.clouddn.com/shenzhen.png)  
+![](https://github.com/chenjiandongx/51job/blob/master/images/shenzhen.png)  
 
 广州  
 
-![](http://oog4yfyu0.bkt.clouddn.com/guangzhou.png)  
+![](https://github.com/chenjiandongx/51job/blob/master/images/guangzhou.png)  
 
 从整体来看北京的待遇最好，其次是上海，接下来才是深圳和广州，真的符合北上深广排名？？？  
 因为各个城市的总的岗位数量不同，所以不能单从哪个范围的数量大而且比较，那样没多大意义。所以应该看比例。可以明显的看到 在 2.1 - 2.5 以及 > 2.5 这两种颜色块上，北京和上面所占的比例是要高于深圳和广州的。而在 0 - 1.0 这个颜色块上，广州是最大的，几乎都接近一半了。比较这四个后，很容得出北京的结构是最合理的，底层的偏少，上层的偏多，中层占了绝大部分。广州反之。
 
 还有一个异地招聘的  
 
-![](http://oog4yfyu0.bkt.clouddn.com/other.png)  
+![](https://github.com/chenjiandongx/51job/blob/master/images/other.png)  
 
 再来看看高工资对应的是什么职位。 
 
