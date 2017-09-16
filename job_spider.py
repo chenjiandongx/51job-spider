@@ -49,21 +49,21 @@ class JobSpider():
             s = bs.replace("举报", "").replace("分享", "").replace("\t", "").strip()
             self.text += s
         # print(self.text)
-        file_path = os.path.join(r"data", r"post_require.txt")
+        file_path = os.path.join("data", "post_require.txt")
         with open(file_path, "w+", encoding="utf-8") as f:
             f.write(self.text)
 
     def post_desc_counter(self):
         """ 职位描述统计 """
         # import thulac
-        file_path = os.path.join(r"data", r"post_require.txt")
+        file_path = os.path.join("data", "post_require.txt")
         post = open(file_path, "r", encoding="utf-8").read()
         # 使用 thulac 分词
         # thu = thulac.thulac(seg_only=True)
         # thu.cut(post, text=True)
 
         # 使用 jieba 分词
-        file_path = os.path.join(r"data", r"user_dict.txt")
+        file_path = os.path.join("data", "user_dict.txt")
         jieba.load_userdict(file_path)
         seg_list = jieba.cut(post, cut_all=False)
         counter = dict()
@@ -71,7 +71,7 @@ class JobSpider():
             counter[seg] = counter.get(seg, 1) + 1
         counter_sort = sorted(counter.items(), key=lambda value: value[1], reverse=True)
         pprint(counter_sort)
-        file_path = os.path.join(r"data", r"post_pre_desc_counter.csv")
+        file_path = os.path.join("data", "post_pre_desc_counter.csv")
         with open(file_path, "w+", encoding="utf-8") as f:
             f_csv = csv.writer(f)
             f_csv.writerows(counter_sort)
@@ -82,7 +82,7 @@ class JobSpider():
         counter = Counter(lst)
         counter_most = counter.most_common()
         pprint(counter_most)
-        file_path = os.path.join(r"data", r"post_pre_counter.csv")
+        file_path = os.path.join("data", "post_pre_counter.csv")
         with open(file_path, "w+", encoding="utf-8") as f:
             f_csv = csv.writer(f)
             f_csv.writerows(counter_most)
@@ -93,7 +93,7 @@ class JobSpider():
         for c in self.company:
             lst.append((c.get('salary'), c.get('post'), c.get('locate')))
         pprint(lst)
-        file_path = os.path.join(r"data", r"post_salary_locate.csv")
+        file_path = os.path.join("data", "post_salary_locate.csv")
         with open(file_path, "w+", encoding="utf-8") as f:
             f_csv = csv.writer(f)
             f_csv.writerows(lst)
@@ -103,7 +103,7 @@ class JobSpider():
         mouth = []
         year = []
         thouand = []
-        file_path = os.path.join(r"data", r"post_salary_locate.csv")
+        file_path = os.path.join("data", "post_salary_locate.csv")
         with open(file_path, "r", encoding="utf-8") as f:
             f_csv = csv.reader(f)
             for row in f_csv:
@@ -128,20 +128,20 @@ class JobSpider():
             calc.append(
                 (round(((float(s[1]) - float(s[0])) * 0.4 + float(s[0])) / 10, 1), t[1], t[2]))
         pprint(calc)
-        file_path = os.path.join(r"data", r"post_salary.csv")
+        file_path = os.path.join("data", "post_salary.csv")
         with open(file_path, "w+", encoding="utf-8") as f:
             f_csv = csv.writer(f)
             f_csv.writerows(calc)
 
     def post_salary_counter(self):
         """ 薪酬统计 """
-        file_path = os.path.join(r"data", r"post_salary.csv")
+        file_path = os.path.join("data", "post_salary.csv")
         with open(file_path, "r", encoding="utf-8") as f:
             f_csv = csv.reader(f)
             lst = [row[0] for row in f_csv]
         counter = Counter(lst).most_common()
         pprint(counter)
-        file_path = os.path.join(r"data", r"post_salary_counter1.csv")
+        file_path = os.path.join("data", "post_salary_counter1.csv")
         with open(file_path, "w+", encoding="utf-8") as f:
             f_csv = csv.writer(f)
             f_csv.writerows(counter)
@@ -149,19 +149,19 @@ class JobSpider():
     def world_cloud(self):
         """ 生成词云 """
         counter = {}
-        file_path = os.path.join(r"data", r"post_pre_desc_counter.csv")
+        file_path = os.path.join("data", "post_pre_desc_counter.csv")
         with open(file_path, "r", encoding="utf-8") as f:
             f_csv = csv.reader(f)
             for row in f_csv:
                 counter[row[0]] = counter.get(row[0], int(row[1]))
             pprint(counter)
-        file_path = os.path.join(r"font", r"msyh.ttf")
+        file_path = os.path.join("font", "msyh.ttf")
         wordcloud = WordCloud(font_path=file_path, 
                               max_words=100, height=600, width=1200).generate_from_frequencies(counter)
         plt.imshow(wordcloud)
         plt.axis('off')
         plt.show()
-        file_path = os.path.join(r"images", r"worldcloud.jpg")
+        file_path = os.path.join("images", "worldcloud.jpg")
         wordcloud.to_file(file_path)
 
     def insert_into_db(self):
@@ -180,7 +180,7 @@ class JobSpider():
                                db="chenx",
                                charset="utf8")
         cur = conn.cursor()
-        file_path = os.path.join(r"data", r"post_salary.csv")
+        file_path = os.path.join("data", "post_salary.csv")
         with open(file_path, "r", encoding="utf-8") as f:
             f_csv = csv.reader(f)
             sql = "insert into jobpost(j_salary, j_locate, j_post) values(%s, %s, %s)"
@@ -197,9 +197,11 @@ class JobSpider():
 if __name__ == "__main__":
     spider = JobSpider()
     spider.job_spider()
-    spider.post_salary_locate()
-    spider.post_salary()
-    spider.insert_into_db()
-    spider.post_salary_counter()
-    spider.post_counter()
-    spider.world_cloud()
+    # 按需启动
+    # spider.post_salary_locate()
+    # spider.post_salary()
+    # spider.insert_into_db()
+    # spider.post_salary_counter()
+    # spider.post_counter()
+    # spider.world_cloud()
+    
