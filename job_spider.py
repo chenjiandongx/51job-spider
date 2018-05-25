@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# coding=utf-8
+
+
 import os
 from pprint import pprint
 import csv
@@ -8,6 +12,7 @@ import requests
 import matplotlib.pyplot as plt
 import jieba
 from wordcloud import WordCloud
+import pymysql
 
 
 class JobSpider:
@@ -25,7 +30,8 @@ class JobSpider:
         }
 
     def job_spider(self):
-        """ 爬虫入口
+        """
+        爬虫入口
         """
         url = "http://search.51job.com/list/010000%252C020000%252C030200%252C" \
               "040000,000000,0000,00,9,99,Python,2,{}.html? lang=c&stype=1&" \
@@ -53,7 +59,8 @@ class JobSpider:
                     pass
 
     def post_require(self):
-        """ 爬取职位描述
+        """
+        爬取职位描述
         """
         for c in self.company:
             r = requests.get(
@@ -69,7 +76,8 @@ class JobSpider:
 
     @staticmethod
     def post_desc_counter():
-        """ 职位描述统计
+        """
+        职位描述统计
         """
         # import thulac
         post = open(os.path.join("data", "post_require.txt"),
@@ -94,7 +102,8 @@ class JobSpider:
             f_csv.writerows(counter_sort)
 
     def post_counter(self):
-        """ 职位统计
+        """
+        职位统计
         """
         lst = [c.get('post') for c in self.company]
         counter = Counter(lst)
@@ -106,7 +115,8 @@ class JobSpider:
             f_csv.writerows(counter_most)
 
     def post_salary_locate(self):
-        """ 招聘大概信息，职位，薪酬以及工作地点
+        """
+        招聘大概信息，职位，薪酬以及工作地点
         """
         lst = []
         for c in self.company:
@@ -119,7 +129,8 @@ class JobSpider:
 
     @staticmethod
     def post_salary():
-        """ 薪酬统一处理
+        """
+        薪酬统一处理
         """
         mouth = []
         year = []
@@ -163,7 +174,8 @@ class JobSpider:
 
     @staticmethod
     def post_salary_counter():
-        """ 薪酬统计
+        """
+        薪酬统计
         """
         with open(os.path.join("data", "post_salary.csv"),
                   "r", encoding="utf-8") as f:
@@ -178,7 +190,8 @@ class JobSpider:
 
     @staticmethod
     def world_cloud():
-        """ 生成词云
+        """
+        生成词云
         """
         counter = {}
         with open(os.path.join("data", "post_pre_desc_counter.csv"),
@@ -199,14 +212,15 @@ class JobSpider:
 
     @staticmethod
     def insert_into_db():
-        """ 插入数据到数据库
-            create table jobpost(
-                j_salary float(3, 1),
-                j_locate text,
-                j_post text
-            );
         """
-        import pymysql
+        插入数据到数据库
+
+        create table jobpost(
+            j_salary float(3, 1),
+            j_locate text,
+            j_post text
+        );
+        """
         conn = pymysql.connect(host="localhost",
                                port=3306,
                                user="root",
