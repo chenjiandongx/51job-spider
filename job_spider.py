@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # coding=utf-8
-
-
+import time
+from gevent import monkey
+from gevent.pool import Pool
+from queue import Queue
 import os
 from pprint import pprint
 import csv
@@ -14,6 +16,8 @@ import jieba
 from wordcloud import WordCloud
 import pymysql
 
+monkey.patch_all()
+
 
 class JobSpider:
     """
@@ -21,6 +25,8 @@ class JobSpider:
     """
 
     def __init__(self):
+        # 记录当前爬第几条数据
+        self.count = 1
         self.company = []
         self.text = ""
         self.headers = {
@@ -28,6 +34,10 @@ class JobSpider:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36'
                           '(KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
         }
+        # 线程池队列
+        self.desc_url_queue = Queue()
+        # 线程池管理线程,最大协程数
+        self.pool = Pool(8)
 
     def job_spider(self):
         """
@@ -40,6 +50,7 @@ class JobSpider:
               "&fromType=1&dibiaoid=0&address=&line=&specialarea=00&from=&welfare="
         urls = [url.format(p) for p in range(1, 14)]
         for url in urls:
+            print('爬取第{}页'.format(urls.index(url) + 1))
             r = requests.get(url, headers=self.headers).content.decode('gbk')
             bs = BeautifulSoup(r, 'lxml').find(
                 "div", class_="dw_table").find_all("div", class_="el")
@@ -54,25 +65,46 @@ class JobSpider:
                         'locate': locate,
                         'salary': salary
                     }
+                    # 岗位详情链接加入队列
+                    self.desc_url_queue.put(href)
                     self.company.append(d)
                 except Exception:
                     pass
+        # 打印队列长度,即多少条岗位详情url
+        print('队列长度为{}'.format(self.desc_url_queue.qsize()))
 
     def post_require(self):
         """
         爬取职位描述
         """
-        for c in self.company:
+        # for c in self.company:
+        while True:
+            # 从队列中取url
+            url = self.desc_url_queue.get()
+
             r = requests.get(
-                c.get('href'), headers=self.headers).content.decode('gbk')
-            bs = BeautifulSoup(r, 'lxml').find(
-                'div', class_="bmsg job_msg inbox").text
-            s = bs.replace("举报", "").replace("分享", "").replace("\t", "").strip()
-            self.text += s
-        # print(self.text)
-        with open(os.path.join("data", "post_require.txt"),
-                  "w+", encoding="utf-8") as f:
-            f.write(self.text)
+                url, headers=self.headers)
+            if r.status_code == 200:
+                print('----爬取第{}条岗位详情----'.format(self.count))
+                r = r.content.decode('gbk')
+                self.desc_url_queue.task_done()
+                self.count += 1
+            else:
+                self.desc_url_queue.put(url)
+                continue
+            try:
+                bs = BeautifulSoup(r, 'lxml').find(
+                    'div', class_="bmsg job_msg inbox").text
+                s = bs.replace("微信", "").replace("分享", "").replace("邮件", "").replace("\t", "").strip()
+                # self.text += s
+                # print(self.text)
+                with open(os.path.join("data", "post_require_new.txt"),
+                          "a", encoding="utf-8") as f:
+                    f.write(s)
+            except Exception as e:
+                print(e)
+                print('第{}条岗位详情解析出错'.format(self.count))
+                print(url)
 
     @staticmethod
     def post_desc_counter():
@@ -241,10 +273,28 @@ class JobSpider:
                     print(e)
         cur.close()
 
+    # 协程池接收请求任务,可以扩展把解析,存储耗时操作加入各自队列,效率最大化
+    def excute_more_task(self, target, count):
+        for i in (0, count):
+            self.pool.apply_async(target)
+
+    # 多线程爬取数据
+    def run(self):
+        self.job_spider()
+        self.excute_more_task(self.post_require, 5)
+        time.sleep(0.01)
+        # 主线程阻塞,等待队列清空
+        self.desc_url_queue.join()
+
 
 if __name__ == "__main__":
     spider = JobSpider()
-    spider.job_spider()
+    start = time.time()
+    # 开始爬取
+    spider.run()
+    end = time.time()
+    print('总耗时{}'.format(end - start))
+    # spider.job_spider()
     # 按需启动
     # spider.post_salary_locate()
     # spider.post_salary()
