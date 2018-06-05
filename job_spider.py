@@ -3,34 +3,33 @@
 
 import time
 import os
-from pprint import pprint
 import csv
-from collections import Counter
 import logging
+from pprint import pprint
+from collections import Counter
 
+import requests
+import matplotlib.pyplot as plt
+import jieba
+import pymysql
 from gevent import monkey
 from gevent.pool import Pool
 from queue import Queue
 from bs4 import BeautifulSoup
 from wordcloud import WordCloud
 
-import requests
-import matplotlib.pyplot as plt
-import jieba
-import pymysql
-
 
 # Make the standard library cooperative.
 monkey.patch_all()
 
 
-def get_logger(logger_level):
+def get_logger():
     """
     创建日志实例
     """
     formatter = logging.Formatter("%(asctime)s - %(message)s")
     logger = logging.getLogger("monitor")
-    logger.setLevel(logger_level)
+    logger.setLevel(LOG_LEVEL)
 
     ch = logging.StreamHandler()
     ch.setFormatter(formatter)
@@ -51,9 +50,11 @@ START_URL = (
     "lat=0%2C0&radius=-1&ord_field=0&confirmdate=9&fromType=1&dibiaoid=0&"
     "address=&line=&specialarea=00&from=&welfare="
 )
+
 LOG_LEVEL = logging.INFO    # 日志等级
 POOL_MAXSIZE = 8  # 线程池最大容量
-logger = get_logger(LOG_LEVEL)
+
+logger = get_logger()
 
 
 class JobSpider:
