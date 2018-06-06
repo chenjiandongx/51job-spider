@@ -5,3 +5,4 @@ jieba
 pymysql
 matplotlib
 BeautifulSoup4
+lxml
